@@ -31,7 +31,8 @@ if (isset($_POST["shop"])) {
                 </button>
 
                 <a href="?page-manage-apps">
-                    <img src="https://cdn.discordapp.com/attachments/1163211705719980163/1192618193445978132/SKYLINELOGO1.png?ex=65a9bb3f&is=6597463f&hm=39a110d53b59e7cd1ee1de0429b4f7cc0feca06cd517efa8bd80dc371925a3fe&" alt="Skyline Auth Icon"
+                    <img src="https://cdn.keyauth.cc/v3/imgs/KeyauthBanner.png" alt="KeyAuth Icon"
+                        style="max-width: 100px; height: auto;">
                 </a>
             </div>
 
