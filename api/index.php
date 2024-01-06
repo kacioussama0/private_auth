@@ -1,3 +1,3 @@
 <?php
-header("Location: https://keyauth.readme.io/");
+header("Location: https://skylinecheats.com");
 exit();

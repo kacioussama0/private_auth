@@ -31,103 +31,13 @@ if (isset($_POST["shop"])) {
                 </button>
 
                 <a href="?page-manage-apps">
-                    <img src="https://cdn.keyauth.cc/v3/imgs/KeyauthBanner.png" alt="KeyAuth Icon"
+                    <img src="https://cdn.discordapp.com/attachments/1163211705719980163/1192618193445978132/SKYLINELOGO1.png?ex=65a9bb3f&is=6597463f&hm=39a110d53b59e7cd1ee1de0429b4f7cc0feca06cd517efa8bd80dc371925a3fe&" alt="Skyline Auth Icon"
                         style="max-width: 100px; height: auto;">
                 </a>
             </div>
 
 
-            <div class="hidden md:block">
-                <a href="https://keyauth.readme.io" target="_blank" type="button"
-                    class="inline-flex text-white bg-[#0f0f17] hover:opacity-60 hover:text-blue-700 focus:ring-0 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 transition duration-200 pt-3"
-                    style="margin-left: 150px;">
-                    <i class="lni lni-code mr-2 mt-1"></i>Documentation
-                </a>
 
-                <a href="https://github.com/keyauth" target="_blank" type="button"
-                    class="inline-flex text-white bg-[#0f0f17] hover:opacity-60 hover:text-blue-700 focus:ring-0 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 transition duration-200 pt-3"
-                    style="margin-left: 75;">
-                    <i class="lni lni-github-original mr-2 mt-1"></i>Examples
-                </a>
-
-                <a href="https://youtube.com/keyauth" target="_blank" type="button"
-                    class="inline-flex text-white bg-[#0f0f17] hover:opacity-60 hover:text-blue-700 focus:ring-0 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 transition duration-200 pt-3"
-                    style="margin-left: 75;">
-                    <i class="lni lni-youtube mr-2 mt-1"></i>YouTube
-                </a>
-
-                <a href="https://t.me/keyauth" target="_blank" type="button"
-                    class="inline-flex text-white bg-[#0f0f17] hover:opacity-60 hover:text-blue-700 focus:ring-0 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 transition duration-200 pt-3"
-                    style="margin-left: 75;">
-                    <i class="lni lni-telegram-original mr-2 mt-1"></i>Telegram
-                </a>
-
-                <a href="https://twitter.com/keyauth" target="_blank" type="button"
-                    class="inline-flex text-white bg-[#0f0f17] hover:opacity-60 hover:text-blue-700 focus:ring-0 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 transition duration-200 pt-3"
-                    style="margin-left: 75;">
-                    <i class="lni lni-twitter-original mr-2 mt-1"></i>Twitter
-                </a>
-
-                <a href="https://instagram.com/keyauthllc" target="_blank" type="button"
-                    class="inline-flex text-white bg-[#0f0f17] hover:opacity-60 hover:text-blue-700 focus:ring-0 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 transition duration-200 pt-3"
-                    style="margin-left: 75;">
-                    <i class="lni lni-instagram-original mr-2 mt-1"></i>Instagram
-                </a>
-
-                <a href="https://vaultcord.com" target="_blank" type="button"
-                    class="inline-flex text-white bg-[#0f0f17] hover:opacity-60 hover:text-blue-700 focus:ring-0 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 transition duration-200 pt-3"
-                    style="margin-left: 75;">
-                    <i class="lni lni-discord-alt mr-2 mt-1"></i>VaultCord
-                </a>
-            </div>
-
-            <div id="dropdownDotsHorizontal"
-                class="z-10 hidden bg-[#09090d] divide-y-2 divide-[#1c64f2] border-2 border-[#1c64f2] rounded-lg shadow w-44">
-                <ul class="py-2 text-white text-xs" aria-labelledby="dropdownMenuIconHorizontalButton">
-                    <li class="">
-                        <a href="https://keyauth.readme.io" target="_blank"
-                            class="block px-4 py-2 hover:opacity-60 inline-flex">
-                            <i class="lni lni-code mr-2 mt-1"></i>Documentation
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://github.com/keyauth" target="_blank"
-                            class="block px-4 py-2 hover:opacity-60 inline-flex">
-                            <i class="lni lni-github-original mr-2 mt-1"></i>Examples
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://youtube.com/keyauth" target="_blank"
-                            class="block px-4 py-2 hover:opacity-60 inline-flex">
-                            <i class="lni lni-youtube mr-2 mt-1"></i>YouTube
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://t.me/keyauth" target="_blank"
-                            class="block px-4 py-2 hover:opacity-60 inline-flex">
-                            <i class="lni lni-telegram-original mr-2 mt-1"></i>Telegram
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://twitter.com/keyauth" target="_blank"
-                            class="block px-4 py-2 hover:opacity-60 inline-flex">
-                            <i class="lni lni-twitter-original mr-2 mt-1"></i>Twitter
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://instagram.com/keyauthllc" target="_blank"
-                            class="block px-4 py-2 hover:opacity-60 inline-flex">
-                            <i class="lni lni-instagram-original mr-2 mt-1"></i>Instagram
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://vaultcord.com" target="_blank"
-                            class="block px-4 py-2 hover:opacity-60 inline-flex">
-                            <i class="lni lni-instagram-original mr-2 mt-1"></i>VaultCord
-                        </a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </div>
 </nav>

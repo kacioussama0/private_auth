@@ -17,15 +17,15 @@ set_exception_handler(function ($exception) {
 });
 
 if(empty($_POST['ownerid'])) {
-    die(json_encode(array("success" => false, "message" => "No OwnerID specified. Select app & copy code snippet from https://keyauth.cc/app/")));
+    die(json_encode(array("success" => false, "message" => "No OwnerID specified. Select app & copy code snippet from https://auth.skylinecheats.com/app")));
 }
 
 if(empty($_POST['name'])) {
-    die(json_encode(array("success" => false, "message" => "No app name specified. Select app & copy code snippet from https://keyauth.cc/app/")));
+    die(json_encode(array("success" => false, "message" => "No app name specified. Select app & copy code snippet from https://auth.skylinecheats.com/app")));
 }
 
 if(strlen(hex2bin($_POST['ownerid'])) != 10) {
-    die(json_encode(array("success" => false, "message" => "OwnerID should be 10 characters long. Select app & copy code snippet from https://keyauth.cc/app/")));
+    die(json_encode(array("success" => false, "message" => "OwnerID should be 10 characters long. Select app & copy code snippet from https://auth.skylinecheats.com/app")));
 }
 
 $ownerid = misc\etc\sanitize(hex2bin($_POST['ownerid'])); // ownerid of account that owns application

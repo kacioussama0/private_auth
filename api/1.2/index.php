@@ -18,27 +18,27 @@ set_exception_handler(function ($exception) {
 });
 
 if(empty(($_POST['ownerid'] ?? $_GET['ownerid']))) {
-    die(json_encode(array("success" => false, "message" => "No OwnerID specified. Select app & copy code snippet from https://keyauth.cc/app/")));
+    die(json_encode(array("success" => false, "message" => "No OwnerID specified. Select app & copy code snippet from https://auth.skylinecheats.com/app")));
 }
 
 if(empty(($_POST['name'] ?? $_GET['name']))) {
-    die(json_encode(array("success" => false, "message" => "No app name specified. Select app & copy code snippet from https://keyauth.cc/app/")));
+    die(json_encode(array("success" => false, "message" => "No app name specified. Select app & copy code snippet from https://auth.skylinecheats.com/app")));
 }
 
 if(strlen(($_POST['ownerid'] ?? $_GET['ownerid'])) != 10) {
-    die(json_encode(array("success" => false, "message" => "OwnerID should be 10 characters long. Select app & copy code snippet from https://keyauth.cc/app/")));
+    die(json_encode(array("success" => false, "message" => "OwnerID should be 10 characters long. Select app & copy code snippet from https://auth.skylinecheats.com/app")));
 }
 
-if (misc\cache\rateLimit("KeyAuthAppLimit:" . ($_POST['ownerid'] ?? $_GET['ownerid']), 1, 60, 200)) {
+if (misc\cache\rateLimit("SkylineAuthAppLimit:" . ($_POST['ownerid'] ?? $_GET['ownerid']), 1, 60, 200)) {
     die(json_encode(array("success" => false, "message" => "This application has sent too many requests. Try again in a minute.")));
 }
 
 $ownerid = misc\etc\sanitize($_POST['ownerid'] ?? $_GET['ownerid']); // ownerid of account that owns application
 $name = misc\etc\sanitize($_POST['name'] ?? $_GET['name']); // application name
-$row = misc\cache\fetch('KeyAuthApp:' . $name . ':' . $ownerid, "SELECT * FROM `apps` WHERE `ownerid` = ? AND `name` = ?", [$ownerid, $name], 0);
+$row = misc\cache\fetch('SkylineAuthApp:' . $name . ':' . $ownerid, "SELECT * FROM `apps` WHERE `ownerid` = ? AND `name` = ?", [$ownerid, $name], 0);
 
 if ($row == "not_found") {
-    die("KeyAuth_Invalid");
+    die("SkylineAuth_Invalid");
 }
 
 // app settings
@@ -91,7 +91,7 @@ $minHwid = $row['minHwid'] ?? 20;
 if($ownerid == "hTmfnZOYPe") {
     $response = json_encode(array(
         "success" => false,
-        "message" => "Jao é um golpista, prova aqui https://keyauth.cc/jao/"
+        "message" => "Jao é um golpista, prova aqui https://SkylineAuth.cc/jao/"
     ));
 
     $sig = hash_hmac('sha256', $response, $secret);
@@ -103,7 +103,7 @@ if($ownerid == "hTmfnZOYPe") {
 if ($banned) {
     die(json_encode(array(
         "success" => false,
-        "message" => "This application has been banned from KeyAuth.cc for violating terms." // yes we self promote to customers of those who break ToS. Should've followed terms :shrug:
+        "message" => "This application has been banned from SkylineAuth.cc for violating terms." // yes we self promote to customers of those who break ToS. Should've followed terms :shrug:
     )));
 }
 
@@ -137,7 +137,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $ip = api\shared\primary\getIp();
         if ($vpnblock) {
             if (api\shared\primary\vpnCheck($ip)) {
-                $row = misc\cache\fetch('KeyAuthWhitelist:' . $secret . ':' . $ip, "SELECT 1 FROM `whitelist` WHERE `ip` = ? AND `app` = ?", [$ip, $secret], 0);
+                $row = misc\cache\fetch('SkylineAuthWhitelist:' . $secret . ':' . $ip, "SELECT 1 FROM `whitelist` WHERE `ip` = ? AND `app` = ?", [$ip, $secret], 0);
                 if ($row == "not_found") {
                     $response = json_encode(array(
                         "success" => false,
@@ -284,7 +284,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
             if (strpos($serverhash, $hash) === false) {
                 if (is_null($serverhash)) {
                     misc\mysql\query("UPDATE `apps` SET `hash` = ? WHERE `secret` = ?", [$hash, $secret]);
-                    misc\cache\purge('KeyAuthApp:' . $name . ':' . $ownerid); // flush cache for application so new hash takes precedent
+                    misc\cache\purge('SkylineAuthApp:' . $name . ':' . $ownerid); // flush cache for application so new hash takes precedent
                 } else {
                     $response = json_encode(array(
                         "success" => false,
@@ -301,11 +301,11 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $enckey = !is_null($_POST['enckey'] ?? $_GET['enckey']) ? misc\etc\sanitize($_POST['enckey'] ?? $_GET['enckey']) . "-" . $secret : NULL;
         $newSession = false;
-        $duplicateSession = misc\cache\select("KeyAuthSessionDupe:$secret:$ip");
+        $duplicateSession = misc\cache\select("SkylineAuthSessionDupe:$secret:$ip");
         if($duplicateSession) {
             $sessionid = $duplicateSession;
 
-            $updateSession = misc\cache\update('KeyAuthState:'.$secret.':'.$sessionid.'', array("validated" => 0, "enckey" => $enckey));
+            $updateSession = misc\cache\update('SkylineAuthState:'.$secret.':'.$sessionid.'', array("validated" => 0, "enckey" => $enckey));
             if(!$updateSession) {
                 $sessionid = misc\etc\generateRandomString();
                 $newSession = true;
@@ -316,7 +316,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
             $newSession = true;
         }
 
-        // $row = misc\cache\fetch('KeyAuthAppStats:' . $secret, "SELECT (SELECT COUNT(1) FROM `users` WHERE `app` = ?) AS 'numUsers', (SELECT COUNT(1) FROM `sessions` WHERE `app` = ? AND `validated` = 1 AND `expiry` > ?) AS 'numOnlineUsers', (SELECT COUNT(1) FROM `keys` WHERE `app` = ?) AS 'numKeys' FROM dual", [$secret, $secret, time(), $secret], 0, 3600);
+        // $row = misc\cache\fetch('SkylineAuthAppStats:' . $secret, "SELECT (SELECT COUNT(1) FROM `users` WHERE `app` = ?) AS 'numUsers', (SELECT COUNT(1) FROM `sessions` WHERE `app` = ? AND `validated` = 1 AND `expiry` > ?) AS 'numOnlineUsers', (SELECT COUNT(1) FROM `keys` WHERE `app` = ?) AS 'numKeys' FROM dual", [$secret, $secret, time(), $secret], 0, 3600);
 
         $numUsers = "N/A - Use fetchStats() function in latest example";
         $numOnlineUsers = "N/A - Use fetchStats() function in latest example";
@@ -331,7 +331,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
                 "numOnlineUsers" => "$numOnlineUsers",
                 "numKeys" => "$numKeys",
                 "version" => "$currentver",
-                "customerPanelLink" => "https://keyauth.cc/panel/$owner/$name/"
+                "customerPanelLink" => "https://SkylineAuth.cc/panel/$owner/$name/"
             ),
             "newSession" => $newSession,
             "nonce" => misc\etc\generateRandomString(32)
@@ -345,10 +345,10 @@ switch ($_POST['type'] ?? $_GET['type']) {
         fastcgi_finish_request();
 
         if($newSession) {
-            misc\cache\insert("KeyAuthState:$secret:$sessionid", serialize(array("credential" => NULL, "enckey" => $enckey, "validated" => 0)), $sessionexpiry);
+            misc\cache\insert("SkylineAuthState:$secret:$sessionid", serialize(array("credential" => NULL, "enckey" => $enckey, "validated" => 0)), $sessionexpiry);
             $time = time() + $sessionexpiry;
             misc\mysql\query("INSERT INTO `sessions` (`id`, `app`, `expiry`, `created_at`, `enckey`, `ip`) VALUES (?, ?, ?, ?, NULLIF(?, ''), ?)", [$sessionid, $secret, $time, time(), $enckey, $ip]);
-            misc\cache\insert("KeyAuthSessionDupe:$secret:$ip", $sessionid, $sessionexpiry);
+            misc\cache\insert("SkylineAuthSessionDupe:$secret:$ip", $sessionid, $sessionexpiry);
         }
 
     case 'register':
@@ -473,7 +473,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         fastcgi_finish_request();
 
         if ($registerSuccess) {
-            misc\cache\update('KeyAuthState:'.$secret.':'.$sessionid.'', array("validated" => 1, "credential" => $username));
+            misc\cache\update('SkylineAuthState:'.$secret.':'.$sessionid.'', array("validated" => 1, "credential" => $username));
             misc\mysql\query("UPDATE `sessions` SET `credential` = ?,`validated` = 1 WHERE `id` = ?", [$username, $sessionid]);
         }
         die();
@@ -574,8 +574,8 @@ switch ($_POST['type'] ?? $_GET['type']) {
                 case 'success':
                     // set key to used, and set usedby
                     misc\mysql\query("UPDATE `keys` SET `status` = 'Used', `usedon` = ?, `usedby` = ? WHERE `key` = ? AND `app` = ?", [time(), $username, $checkkey, $secret]);
-                    misc\cache\purge('KeyAuthKeys:' . $secret . ':' . $checkkey);
-                    misc\cache\purge('KeyAuthSubs:' . $secret . ':' . $username);
+                    misc\cache\purge('SkylineAuthKeys:' . $secret . ':' . $checkkey);
+                    misc\cache\purge('SkylineAuthSubs:' . $secret . ':' . $username);
                     $response = json_encode(array(
                         "success" => true,
                         "message" => "Upgraded successfully",
@@ -688,7 +688,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
                 break;
             default:
                 misc\mysql\query("UPDATE `sessions` SET `validated` = 1,`credential` = ? WHERE `id` = ?", [$username, $sessionid]);
-                misc\cache\update('KeyAuthState:'.$secret.':'.$sessionid.'', array("validated" => 1, "credential" => $username));
+                misc\cache\update('SkylineAuthState:'.$secret.':'.$sessionid.'', array("validated" => 1, "credential" => $username));
 
                 $ip = api\shared\primary\getIp();
                 $response = json_encode(array(
@@ -798,7 +798,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
                 break;
             default:
                 misc\mysql\query("UPDATE `sessions` SET `validated` = 1,`credential` = ? WHERE `id` = ?", [$checkkey, $sessionid]);
-                misc\cache\update('KeyAuthState:'.$secret.':'.$sessionid.'', array("validated" => 1, "credential" => $checkkey));
+                misc\cache\update('SkylineAuthState:'.$secret.':'.$sessionid.'', array("validated" => 1, "credential" => $checkkey));
 
                 $ip = api\shared\primary\getIp();
                 $response = json_encode(array(
@@ -875,7 +875,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
                 break;
             default:
                 misc\mysql\query("UPDATE `sessions` SET `validated` = 1,`credential` = ? WHERE `id` = ?", [$checkkey, $sessionid]);
-                misc\cache\update('KeyAuthState:'.$secret.':'.$sessionid.'', array("validated" => 1, "credential" => $checkkey));
+                misc\cache\update('SkylineAuthState:'.$secret.':'.$sessionid.'', array("validated" => 1, "credential" => $checkkey));
                 $response = json_encode(array(
                     "success" => true,
                     "message" => "$loggedInMsg",
@@ -895,7 +895,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $un = misc\etc\sanitize($_POST['username'] ?? $_GET['username']);
         $email = strtolower(misc\etc\sanitize($_POST['email'] ?? $_GET['email']));
 
-        $row = misc\cache\fetch('KeyAuthUser:' . $secret . ':' . $un, "SELECT * FROM `users` WHERE `username` = ? AND `app` = ?", [$un, $secret], 0);
+        $row = misc\cache\fetch('SkylineAuthUser:' . $secret . ':' . $un, "SELECT * FROM `users` WHERE `username` = ? AND `app` = ?", [$un, $secret], 0);
         if ($row == "not_found") {
             $response = json_encode(array(
                 "success" => false,
@@ -946,7 +946,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
                       <table width="100%" border="0" cellspacing="0" cellpadding="0" role="presentation">
                         <tr>
                           <td align="center">
-                            <a href="https://keyauth.cc/resetUser/?secret='.$emailSecret.'" style="color:white;background-color: #3869D4;border-top: 10px solid #3869D4;border-right: 18px solid #3869D4;border-bottom: 10px solid #3869D4;border-left: 18px solid #3869D4;display: inline-block;text-decoration: none;border-radius: 3px;-webkit-text-size-adjust: none;box-sizing: border-box;" target="_blank">Reset Password</a>
+                            <a href="https://SkylineAuth.cc/resetUser/?secret='.$emailSecret.'" style="color:white;background-color: #3869D4;border-top: 10px solid #3869D4;border-right: 18px solid #3869D4;border-bottom: 10px solid #3869D4;border-left: 18px solid #3869D4;display: inline-block;text-decoration: none;border-radius: 3px;-webkit-text-size-adjust: none;box-sizing: border-box;" target="_blank">Reset Password</a>
                           </td>
                         </tr>
                       </table>
@@ -954,9 +954,9 @@ switch ($_POST['type'] ?? $_GET['type']) {
                   </tr>
                 </table>
                 <p>Thanks,
-                  <br>The KeyAuth team</p>
+                  <br>The SkylineAuth team</p>
             </div>';
-            misc\email\send($un, $email, $body, "KeyAuth - Password Reset for {$name}");
+            misc\email\send($un, $email, $body, "SkylineAuth - Password Reset for {$name}");
             $response = json_encode(array(
                 "success" => true,
                 "message" => "Successfully sent email to change password.",
@@ -973,7 +973,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $session = api\shared\primary\getSession($sessionid, $secret);
         $enckey = $session["enckey"];
 
-        $rows = misc\cache\fetch('KeyAuthOnlineUsers:' . $secret, "SELECT DISTINCT CONCAT(LEFT(`credential`, 10), IF(LENGTH(`credential`) > 10, REPEAT('*', LENGTH(`credential`) - 10), '')) AS `credential` FROM `sessions` WHERE `validated` = 1 AND `app` = ?", [$secret], 1, 1800);
+        $rows = misc\cache\fetch('SkylineAuthOnlineUsers:' . $secret, "SELECT DISTINCT CONCAT(LEFT(`credential`, 10), IF(LENGTH(`credential`) > 10, REPEAT('*', LENGTH(`credential`) - 10), '')) AS `credential` FROM `sessions` WHERE `validated` = 1 AND `app` = ?", [$secret], 1, 1800);
 
         if ($rows == "not_found") {
             $response = json_encode(array(
@@ -999,7 +999,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $session = api\shared\primary\getSession($sessionid, $secret);
         $enckey = $session["enckey"];
     
-        $row = misc\cache\fetch('KeyAuthAppStats:' . $secret, "SELECT (SELECT COUNT(1) FROM `users` WHERE `app` = ?) AS 'numUsers', (SELECT COUNT(1) FROM `sessions` WHERE `app` = ? AND `validated` = 1 AND `expiry` > ?) AS 'numOnlineUsers', (SELECT COUNT(1) FROM `keys` WHERE `app` = ?) AS 'numKeys' FROM dual", [$secret, $secret, time(), $secret], 0, 3600);
+        $row = misc\cache\fetch('SkylineAuthAppStats:' . $secret, "SELECT (SELECT COUNT(1) FROM `users` WHERE `app` = ?) AS 'numUsers', (SELECT COUNT(1) FROM `sessions` WHERE `app` = ? AND `validated` = 1 AND `expiry` > ?) AS 'numOnlineUsers', (SELECT COUNT(1) FROM `keys` WHERE `app` = ?) AS 'numKeys' FROM dual", [$secret, $secret, time(), $secret], 0, 3600);
 
         $numUsers = $row['numUsers'];
         $numOnlineUsers = $row['numOnlineUsers'];
@@ -1013,7 +1013,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
                 "numOnlineUsers" => "$numOnlineUsers",
                 "numKeys" => "$numKeys",
                 "version" => "$currentver",
-                "customerPanelLink" => "https://keyauth.cc/panel/$owner/$name/"
+                "customerPanelLink" => "https://SkylineAuth.cc/panel/$owner/$name/"
             ),
             "nonce" => misc\etc\generateRandomString(32)
         ));
@@ -1071,7 +1071,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
             die($response);
         }
 
-        $row = misc\cache\fetch('KeyAuthUserVar:' . $secret . ':' . $var . ':' . $session["credential"], "SELECT `data`, `readOnly` FROM `uservars` WHERE `name` = ? AND `user` = ? AND `app` = ?", [$var, $session["credential"], $secret], 0);
+        $row = misc\cache\fetch('SkylineAuthUserVar:' . $secret . ':' . $var . ':' . $session["credential"], "SELECT `data`, `readOnly` FROM `uservars` WHERE `name` = ? AND `user` = ? AND `app` = ?", [$var, $session["credential"], $secret], 0);
 
         if ($row != "not_found") {
             $readOnly = $row["readOnly"];
@@ -1089,7 +1089,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $query = misc\mysql\query("REPLACE INTO `uservars` (`name`, `data`, `user`, `app`) VALUES (?, ?, ?, ?)", [$var, $data, $session["credential"], $secret]);
 
         if ($query->affected_rows != 0) {
-            misc\cache\purge('KeyAuthUserVar:' . $secret . ':' . $var . ':' . $session["credential"]);
+            misc\cache\purge('SkylineAuthUserVar:' . $secret . ':' . $var . ':' . $session["credential"]);
             $response = json_encode(array(
                 "success" => true,
                 "message" => "Successfully set variable",
@@ -1128,7 +1128,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $var = misc\etc\sanitize($_POST['var'] ?? $_GET['var']);
 
-        $row = misc\cache\fetch('KeyAuthUserVar:' . $secret . ':' . $var . ':' . $session["credential"], "SELECT `data`, `readOnly` FROM `uservars` WHERE `name` = ? AND `user` = ? AND `app` = ?", [$var, $session["credential"], $secret], 0);
+        $row = misc\cache\fetch('SkylineAuthUserVar:' . $secret . ':' . $var . ':' . $session["credential"], "SELECT `data`, `readOnly` FROM `uservars` WHERE `name` = ? AND `user` = ? AND `app` = ?", [$var, $session["credential"], $secret], 0);
 
         if ($row == "not_found") {
             $response = json_encode(array(
@@ -1161,7 +1161,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $varid = misc\etc\sanitize($_POST['varid'] ?? $_GET['varid']);
 
-        $row = misc\cache\fetch('KeyAuthVar:' . $secret . ':' . $varid, "SELECT `msg`, `authed` FROM `vars` WHERE `varid` = ? AND `app` = ?", [$varid, $secret], 0);
+        $row = misc\cache\fetch('SkylineAuthVar:' . $secret . ':' . $varid, "SELECT `msg`, `authed` FROM `vars` WHERE `varid` = ? AND `app` = ?", [$varid, $secret], 0);
 
         if ($row == "not_found") {
             $response = json_encode(array(
@@ -1209,7 +1209,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $hwid = misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid']);
         $ip = api\shared\primary\getIp();
 
-        $row = misc\cache\fetch('KeyAuthBlacklist:' . $secret . ':' . $ip . ':' . $hwid, "SELECT 1 FROM `bans` WHERE (`hwid` = ? OR `ip` = ?) AND `app` = ?", [$hwid, $ip, $secret], 0);
+        $row = misc\cache\fetch('SkylineAuthBlacklist:' . $secret . ':' . $ip . ':' . $hwid, "SELECT 1 FROM `bans` WHERE (`hwid` = ? OR `ip` = ?) AND `app` = ?", [$hwid, $ip, $secret], 0);
 
         if ($row != "not_found") {
             $response = json_encode(array(
@@ -1248,7 +1248,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         }
 
         $channel = misc\etc\sanitize($_POST['channel'] ?? $_GET['channel']);
-        $rows = misc\cache\fetch('KeyAuthChatMsgs:' . $secret . ':' . $channel, "SELECT `author`, `message`, `timestamp` FROM `chatmsgs` WHERE `channel` = ? AND `app` = ?", [$channel, $secret], 1);
+        $rows = misc\cache\fetch('SkylineAuthChatMsgs:' . $secret . ':' . $channel, "SELECT `author`, `message`, `timestamp` FROM `chatmsgs` WHERE `channel` = ? AND `app` = ?", [$channel, $secret], 1);
 
         if ($rows == "not_found") {
             $rows = [];
@@ -1354,7 +1354,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         misc\mysql\query("INSERT INTO `chatmsgs` (`author`, `message`, `timestamp`, `channel`,`app`) VALUES (?, ?, ?, ?, ?)", [$credential, $message, time(), $channel, $secret]);
         misc\mysql\query("DELETE FROM `chatmsgs` WHERE `app` = ? AND `channel` = ? AND `id` NOT IN ( SELECT `id` FROM ( SELECT `id` FROM `chatmsgs` WHERE `channel` = ? AND `app` = ? ORDER BY `id` DESC LIMIT 50) foo );", [$secret, $channel, $channel, $secret]);
-        misc\cache\purge('KeyAuthChatMsgs:' . $secret . ':' . $channel);
+        misc\cache\purge('SkylineAuthChatMsgs:' . $secret . ':' . $channel);
         $response = json_encode(array(
             "success" => true,
             "message" => "Successfully sent chat message",
@@ -1390,7 +1390,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $pcuser = misc\etc\sanitize($_POST['pcuser'] ?? $_GET['pcuser']);
 
         if (is_null($webhook)) {
-            $roleCheck = misc\cache\fetch('KeyAuthSellerCheck:' . $owner, "SELECT `role`,`expires` FROM `accounts` WHERE `username` = ?", [$owner], 0);
+            $roleCheck = misc\cache\fetch('SkylineAuthSellerCheck:' . $owner, "SELECT `role`,`expires` FROM `accounts` WHERE `username` = ?", [$owner], 0);
             if($roleCheck['role'] == "tester") {
                 $query = misc\mysql\query("SELECT count(*) AS 'numLogs' FROM `logs` WHERE `logapp` = ?",[$secret]);
                 $row = mysqli_fetch_array($query->result);
@@ -1457,7 +1457,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $enckey = $session["enckey"];
 
         $webid = misc\etc\sanitize($_POST['webid'] ?? $_GET['webid']);
-        $row = misc\cache\fetch('KeyAuthWebhook:' . $secret . ':' . $webid, "SELECT `baselink`, `useragent`, `authed` FROM `webhooks` WHERE `webid` = ? AND `app` = ?", [$webid, $secret], 0);
+        $row = misc\cache\fetch('SkylineAuthWebhook:' . $secret . ':' . $webid, "SELECT `baselink`, `useragent`, `authed` FROM `webhooks` WHERE `webid` = ? AND `app` = ?", [$webid, $secret], 0);
         if ($row == "not_found") {
             $response = json_encode(array(
                 "success" => false,
@@ -1526,7 +1526,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $fileid = misc\etc\sanitize($_POST['fileid'] ?? $_GET['fileid']);
 
-        $row = misc\cache\fetch('KeyAuthFile:' . $secret . ':' . $fileid, "SELECT `name`, `url`, `authed` FROM `files` WHERE `app` = ? AND `id` = ?", [$secret, $fileid], 0);
+        $row = misc\cache\fetch('SkylineAuthFile:' . $secret . ':' . $fileid, "SELECT `name`, `url`, `authed` FROM `files` WHERE `app` = ? AND `id` = ?", [$secret, $fileid], 0);
 
         if ($row == "not_found") {
             $response = json_encode(array(
@@ -1634,7 +1634,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         misc\mysql\query("UPDATE `users` SET `banned` = ? WHERE `username` = ? AND `app` = ?", [$reason, $credential, $secret]);
         if ($query->affected_rows != 0) {
-            misc\cache\purge('KeyAuthUser:' . $secret . ':' . $credential);
+            misc\cache\purge('SkylineAuthUser:' . $secret . ':' . $credential);
             $response = json_encode(array(
                 "success" => true,
                 "message" => "Successfully Banned User",
@@ -1763,7 +1763,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
                 die($response);
             }
     
-            $row = misc\cache\fetch('KeyAuthUser:' . $secret . ':' . $session["credential"], "SELECT * FROM `users` WHERE `username` = ? AND `app` = ?", [$session["credential"], $secret], 0);
+            $row = misc\cache\fetch('SkylineAuthUser:' . $secret . ':' . $session["credential"], "SELECT * FROM `users` WHERE `username` = ? AND `app` = ?", [$session["credential"], $secret], 0);
     
             if ($row["2fa"]) {
     
@@ -1787,15 +1787,15 @@ switch ($_POST['type'] ?? $_GET['type']) {
     
                 $secret_code = $_2fa->createSecret();
     
-                misc\cache\insert('KeyAuthTwoFactorAuthentication:' . $session["credential"], $secret_code, 300);
+                misc\cache\insert('SkylineAuthTwoFactorAuthentication:' . $session["credential"], $secret_code, 300);
     
-                $qrcode = str_replace(urlencode("https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl="), " ", $_2fa->getQRCodeGoogleUrl($session["credential"], $secret_code, 'KeyAuth'));
+                $qrcode = str_replace(urlencode("https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl="), " ", $_2fa->getQRCodeGoogleUrl($session["credential"], $secret_code, 'SkylineAuth'));
     
                 $response = json_encode(array(
                     "success" => true,
                     "2fa" => array(
                         "secret_code" => $secret_code,
-                        "QRCode" => "otpauth://totp/" . $session["credential"] . "?secret=" . $secret_code . "&issuer=KeyAuth"
+                        "QRCode" => "otpauth://totp/" . $session["credential"] . "?secret=" . $secret_code . "&issuer=SkylineAuth"
                     )
                 ));
     
@@ -1807,7 +1807,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
             }
             else {
     
-                $secret_code = misc\cache\select('KeyAuthTwoFactorAuthentication:' . $session["credential"]);
+                $secret_code = misc\cache\select('SkylineAuthTwoFactorAuthentication:' . $session["credential"]);
     
                 if (!$secret_code) {
     
@@ -1826,8 +1826,8 @@ switch ($_POST['type'] ?? $_GET['type']) {
                 if ($_2fa->verifyCode($secret_code, $code, 2)) {
     
                     misc\mysql\query("UPDATE `users` SET `2fa` = ?, `googleAuthCode` = ? WHERE `app` = ? AND `username` = ?", [1, $secret_code, $secret, $session["credential"]]);
-                    misc\cache\purge('KeyAuthUser:' . $secret . ':' . $session["credential"]);
-                    misc\cache\purge('KeyAuthTwoFactorAuthentication: ' . $session["credential"]);
+                    misc\cache\purge('SkylineAuthUser:' . $secret . ':' . $session["credential"]);
+                    misc\cache\purge('SkylineAuthTwoFactorAuthentication: ' . $session["credential"]);
     
                     $response = json_encode(array(
                         "success" => true,
@@ -1887,7 +1887,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
                 die($response);
             }
     
-            $row = misc\cache\fetch('KeyAuthUser:' . $secret . ':' . $session["credential"], "SELECT * FROM `users` WHERE `username` = ? AND `app` = ?", [$session["credential"], $secret], 0);
+            $row = misc\cache\fetch('SkylineAuthUser:' . $secret . ':' . $session["credential"], "SELECT * FROM `users` WHERE `username` = ? AND `app` = ?", [$session["credential"], $secret], 0);
     
             if (!$row["2fa"]) {
     
@@ -1912,7 +1912,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
             if ($_2fa->verifyCode($secret_code, $code, 2)) {
     
                 misc\mysql\query("UPDATE `users` SET `2fa` = ?, `googleAuthCode` = ? WHERE `app` = ? AND `username` = ?", [0, NULL, $secret, $row["username"]]);
-                misc\cache\purge('KeyAuthUser:' . $secret . ':' . $session["credential"]);
+                misc\cache\purge('SkylineAuthUser:' . $secret . ':' . $session["credential"]);
     
                 $response = json_encode(array(
                     "success" => true,

@@ -25,7 +25,7 @@ set_exception_handler(function ($exception) {
     \dashboard\primary\error($exception->getMessage());
 });
 
-$istwofa = $_SESSION["temp_istwofamode"] ? true : false;
+
 
 ?>
 
