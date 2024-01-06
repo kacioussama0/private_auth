@@ -1,0 +1,8 @@
+<?php
+
+
+include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/credentials.php'; // reference credentials
+
+foreach (glob(__DIR__ . "/*.php") as $filename) {
+    include $filename;
+}
