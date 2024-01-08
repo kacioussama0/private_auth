@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
     <div class="flex flex-col items-center pb-4">
-        <img class="w-20 h-20 rounded-full" src="<?= "https://skylinecheats.com/img/main.png"//$_SESSION["img"]; ?>" alt="profile image" />
+        <img class="w-20 h-20 rounded-full" src="<?= "../../logo.png"//$_SESSION["img"]; ?>" alt="profile image" />
         <?php if ($role == "seller") { ?>
             <h5 class="mb-1 text-xl font-medium bg-purple-700 stars"><?= $_SESSION["username"]; ?></h5>
         <?php } else { ?>
