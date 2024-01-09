@@ -271,22 +271,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
 
 
-            $checkHardwareId = misc\mysql\query("SELECT hwid FROM users WHERE hwid = ?", [misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid'])]);
 
-
-            if($checkHardwareId -> num_rows == 0) {
-
-                $response = json_encode(array(
-                    "success" => false,
-                    "message" => "KeyAuth_Invalid",
-                ), JSON_UNESCAPED_SLASHES);
-
-                $sig = hash_hmac('sha256', $response, $secret);
-                header("signature: {$sig}");
-
-                die($response);
-
-            }
 
             if ($ver != $currentver) {
                 // auto-update system
