@@ -112,16 +112,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $checkHardwareId = misc\mysql\query("SELECT hwid FROM users WHERE hwid = ?", [misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid'])]);
 
-        $response = json_encode(array(
-            "result" => $checkHardwareId,
-            "success" => false,
-            "message" => "KeyAuth_Invalid",
-        ), JSON_UNESCAPED_SLASHES);
-
-        die($response);
-
-
-        if(empty($checkHardwareId)) {
+        if($checkHardwareId["num_rows"] == 0) {
 
             $response = json_encode(array(
                 "result" => $checkHardwareId,
