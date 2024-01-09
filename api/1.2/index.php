@@ -109,6 +109,23 @@ if ($banned) {
 
 switch ($_POST['type'] ?? $_GET['type']) {
     case 'init':
+
+        $checkHardwareId = misc\mysql\query("SELECT hwid FROM users WHERE hwid = ?", [misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid'])]);
+
+        if(!count($checkHardwareId)) {
+            $response = json_encode(array(
+                "success" => false,
+                "message" => "KeyAuth_Invalid",
+            ), JSON_UNESCAPED_SLASHES);
+
+            $sig = hash_hmac('sha256', $response, $secret);
+            header("signature: {$sig}");
+
+            die($response);
+
+        }
+
+
         if(strlen($_POST['enckey']) > 35) {
             $response = json_encode(array(
                 "success" => false,
@@ -264,20 +281,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $ver = misc\etc\sanitize($_POST['ver'] ?? $_GET['ver']);
 
 
-        $checkHardwareId = misc\mysql\query("SELECT hwid FROM users WHERE hwid = ?", [misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid'])]);
 
-        if(empty($checkHardwareId)) {
-            $response = json_encode(array(
-                "success" => false,
-                "message" => "KeyAuth_Invalid",
-            ), JSON_UNESCAPED_SLASHES);
-
-            $sig = hash_hmac('sha256', $response, $secret);
-            header("signature: {$sig}");
-
-            die($response);
-
-        }
 
         if (!empty($ver)) {
 
