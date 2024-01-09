@@ -333,7 +333,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
 
 
-        if($checkHardwareId -> num_rows == 0) {
+        if($checkHardwareId -> num_rows) {
 
 
 
