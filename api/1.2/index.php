@@ -1225,21 +1225,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $ip = api\shared\primary\getIp();
 
 
-        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid' LIMIT 1");
 
-        if($checkHardwareId -> num_rows == 0) {
-
-            $response = json_encode(array(
-                "success" => false,
-                "message" => "KeyAuth_Invalid",
-            ), JSON_UNESCAPED_SLASHES);
-
-            $sig = hash_hmac('sha256', $response, $secret);
-            header("signature: {$sig}");
-
-            die($response);
-
-        }
 
 
         $row = misc\cache\fetch('KeyAuthBlacklist:' . $secret . ':' . $ip . ':' . $hwid, "SELECT 1 FROM `bans` WHERE (`hwid` = ? OR `ip` = ?) AND `app` = ?", [$hwid, $ip, $secret], 0);
@@ -1255,6 +1241,24 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
             die($response);
         } else {
+
+            $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid'");
+
+            if($checkHardwareId -> num_rows == 0) {
+
+                $response = json_encode(array(
+                    "success" => true,
+                    "message" => "Client is blacklisted",
+                ), JSON_UNESCAPED_SLASHES);
+
+                $sig = hash_hmac('sha256', $response, $secret);
+                header("signature: {$sig}");
+
+                die($response);
+
+            }
+
+
             $response = json_encode(array(
                 "success" => false,
                 "message" => "Client is not blacklisted"
