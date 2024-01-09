@@ -115,7 +115,6 @@ switch ($_POST['type'] ?? $_GET['type']) {
         if($checkHardwareId["num_rows"] == 0) {
 
             $response = json_encode(array(
-                "result" => $checkHardwareId,
                 "success" => false,
                 "message" => "KeyAuth_Invalid",
             ), JSON_UNESCAPED_SLASHES);
