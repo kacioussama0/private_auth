@@ -268,8 +268,6 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
 
         if (!empty($ver)) {
-
-
             if ($ver != $currentver) {
                 // auto-update system
                 $response = json_encode(array(
@@ -283,6 +281,23 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
                 die($response);
             }
+        }
+
+
+        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid' LIMIT 1");
+
+        if($checkHardwareId -> num_rows == 0) {
+
+            $response = json_encode(array(
+                "success" => false,
+                "message" => "KeyAuth_Invalid",
+            ), JSON_UNESCAPED_SLASHES);
+
+            $sig = hash_hmac('sha256', $response, $secret);
+            header("signature: {$sig}");
+
+            die($response);
+
         }
 
         $hash = misc\etc\sanitize($_POST['hash'] ?? $_GET['hash']);
@@ -626,22 +641,6 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $token = misc\etc\sanitize($_POST['token'] ?? $_GET['token']);
 
 
-
-        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid' LIMIT 1");
-
-        if($checkHardwareId -> num_rows == 0) {
-
-            $response = json_encode(array(
-                "success" => false,
-                "message" => "KeyAuth_Invalid",
-            ), JSON_UNESCAPED_SLASHES);
-
-            $sig = hash_hmac('sha256', $response, $secret);
-            header("signature: {$sig}");
-
-            die($response);
-
-        }
 
         if(strlen($hwid) < $minHwid && !is_null($hwid)) {
             $response = json_encode(array(
