@@ -339,6 +339,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
             $response = json_encode(array(
                 'response' => $checkHardwareId,
+                'hwid' => $_GET['hwid'],
                 "success" => false,
                 "message" => "KeyAuth_Invalid",
             ), JSON_UNESCAPED_SLASHES);
