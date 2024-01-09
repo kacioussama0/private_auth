@@ -329,11 +329,11 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $numOnlineUsers = "N/A - Use fetchStats() function in latest example";
         $numKeys = "N/A - Use fetchStats() function in latest example";
 
-        $checkHardwareId = misc\mysql\query("SELECT * FROM users", [misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid'])],"s");
+        $checkHardwareId = misc\mysql\query("SELECT * FROM users WHERE hwid = ?", [misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid'])],"s");
 
 
 
-        if($checkHardwareId -> num_rows) {
+        if($checkHardwareId -> num_rows == 0) {
 
 
 
