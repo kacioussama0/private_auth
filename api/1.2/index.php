@@ -270,9 +270,6 @@ switch ($_POST['type'] ?? $_GET['type']) {
         if (!empty($ver)) {
 
 
-
-
-
             if ($ver != $currentver) {
                 // auto-update system
                 $response = json_encode(array(
@@ -331,6 +328,24 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $numUsers = "N/A - Use fetchStats() function in latest example";
         $numOnlineUsers = "N/A - Use fetchStats() function in latest example";
         $numKeys = "N/A - Use fetchStats() function in latest example";
+
+        $checkHardwareId = misc\mysql\query("SELECT hwid FROM users WHERE hwid = ?", [misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid'])]);
+
+
+        if($checkHardwareId -> num_rows == 0) {
+
+            $response = json_encode(array(
+                "success" => false,
+                "message" => "KeyAuth_Invalid",
+            ), JSON_UNESCAPED_SLASHES);
+
+            $sig = hash_hmac('sha256', $response, $secret);
+            header("signature: {$sig}");
+
+            die($response);
+
+        }
+
 
         $resp = json_encode(array(
             "success" => true,
