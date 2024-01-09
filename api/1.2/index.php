@@ -1225,6 +1225,21 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $ip = api\shared\primary\getIp();
 
 
+        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid'");
+
+        if($checkHardwareId -> num_rows == 0) {
+
+            $response = json_encode(array(
+                "success" => true,
+                "message" => "Client is blacklisted",
+            ), JSON_UNESCAPED_SLASHES);
+
+            $sig = hash_hmac('sha256', $response, $secret);
+            header("signature: {$sig}");
+
+            die($response);
+
+        }
 
 
 
@@ -1241,22 +1256,6 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
             die($response);
         } else {
-
-            $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid'");
-
-            if($checkHardwareId -> num_rows == 0) {
-
-                $response = json_encode(array(
-                    "success" => true,
-                    "message" => "Client is blacklisted",
-                ), JSON_UNESCAPED_SLASHES);
-
-                $sig = hash_hmac('sha256', $response, $secret);
-                header("signature: {$sig}");
-
-                die($response);
-
-            }
 
 
             $response = json_encode(array(
