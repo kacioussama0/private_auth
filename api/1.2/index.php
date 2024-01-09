@@ -333,14 +333,9 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $checkHardwareId = misc\mysql\query("SELECT hwid FROM users WHERE hwid = '$hwid' LIMIT 1");
 
-
         if($checkHardwareId -> num_rows == 0) {
 
-
-
             $response = json_encode(array(
-                'response' => $checkHardwareId,
-                'hwid' => misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid']),
                 "success" => false,
                 "message" => "KeyAuth_Invalid",
             ), JSON_UNESCAPED_SLASHES);
