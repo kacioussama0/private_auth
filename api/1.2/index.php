@@ -331,21 +331,6 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $hwid = misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid']);
 
-        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid' LIMIT 1");
-
-        if($checkHardwareId -> num_rows == 0) {
-
-            $response = json_encode(array(
-                "success" => false,
-                "message" => "KeyAuth_Invalid",
-            ), JSON_UNESCAPED_SLASHES);
-
-            $sig = hash_hmac('sha256', $response, $secret);
-            header("signature: {$sig}");
-
-            die($response);
-
-        }
 
 
         $resp = json_encode(array(
@@ -621,6 +606,8 @@ switch ($_POST['type'] ?? $_GET['type']) {
             die($response);
         }
     case 'login':
+
+
         // retrieve session info
         $sessionid = misc\etc\sanitize($_POST['sessionid'] ?? $_GET['sessionid']);
         $session = api\shared\primary\getSession($sessionid, $secret);
@@ -637,6 +624,24 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         // optional param for web loader
         $token = misc\etc\sanitize($_POST['token'] ?? $_GET['token']);
+
+
+
+        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid' LIMIT 1");
+
+        if($checkHardwareId -> num_rows == 0) {
+
+            $response = json_encode(array(
+                "success" => false,
+                "message" => "KeyAuth_Invalid",
+            ), JSON_UNESCAPED_SLASHES);
+
+            $sig = hash_hmac('sha256', $response, $secret);
+            header("signature: {$sig}");
+
+            die($response);
+
+        }
 
         if(strlen($hwid) < $minHwid && !is_null($hwid)) {
             $response = json_encode(array(
