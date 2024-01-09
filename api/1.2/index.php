@@ -331,7 +331,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $hwid = misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid'];
 
-        $checkHardwareId = misc\mysql\query("SELECT hwid FROM users WHERE hwid = '$hwid' LIMIT 1");
+        $checkHardwareId = misc\mysql\query("SELECT hwid FROM users WHERE hwid = $hwid");
 
 
         if($checkHardwareId -> num_rows == 0) {
