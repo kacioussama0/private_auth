@@ -329,8 +329,9 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $numOnlineUsers = "N/A - Use fetchStats() function in latest example";
         $numKeys = "N/A - Use fetchStats() function in latest example";
 
-        $checkHardwareId = misc\mysql\query("SELECT hwid FROM users WHERE hwid = ? LIMIT 1", [$_GET['hwid']],"s");
+        $hwid = misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid'];
 
+        $checkHardwareId = misc\mysql\query("SELECT hwid FROM users WHERE hwid = '$hwid' LIMIT 1");
 
 
         if($checkHardwareId -> num_rows == 0) {
