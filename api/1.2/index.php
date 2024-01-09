@@ -1231,7 +1231,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
             $response = json_encode(array(
                 "success" => false,
-                "message" => "Client is blacklisted",
+                "message" => "KeyAuth_Invalid",
             ), JSON_UNESCAPED_SLASHES);
 
             $sig = hash_hmac('sha256', $response, $secret);
