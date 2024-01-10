@@ -273,7 +273,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
             $response = json_encode(array(
                 "success" => false,
-                "message" => "invalidver",
+                "message" => "$appdisabled",
             ), JSON_UNESCAPED_SLASHES);
 
             $sig = hash_hmac('sha256', $response, $secret);
