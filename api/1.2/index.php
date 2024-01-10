@@ -110,6 +110,24 @@ if ($banned) {
 switch ($_POST['type'] ?? $_GET['type']) {
     case 'init':
 
+
+
+        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid'");
+
+        if($checkHardwareId -> num_rows == 0) {
+
+            $response = json_encode(array(
+                "success" => true,
+                "message" => "Client is blacklisted",
+            ), JSON_UNESCAPED_SLASHES);
+
+            $sig = hash_hmac('sha256', $response, $secret);
+            header("signature: {$sig}");
+
+            die($response);
+
+        }
+
         if(strlen($_POST['enckey']) > 35) {
             $response = json_encode(array(
                 "success" => false,
@@ -1223,24 +1241,6 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $hwid = misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid']);
         $ip = api\shared\primary\getIp();
-
-
-        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid'");
-
-        if($checkHardwareId -> num_rows == 0) {
-
-            $response = json_encode(array(
-                "success" => true,
-                "message" => "Client is blacklisted",
-            ), JSON_UNESCAPED_SLASHES);
-
-            $sig = hash_hmac('sha256', $response, $secret);
-            header("signature: {$sig}");
-
-            die($response);
-
-        }
-
 
 
         $row = misc\cache\fetch('KeyAuthBlacklist:' . $secret . ':' . $ip . ':' . $hwid, "SELECT 1 FROM `bans` WHERE (`hwid` = ? OR `ip` = ?) AND `app` = ?", [$hwid, $ip, $secret], 0);
