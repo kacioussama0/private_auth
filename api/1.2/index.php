@@ -265,6 +265,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $ver = misc\etc\sanitize($_POST['ver'] ?? $_GET['ver']);
 
+        $hwid = misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid']);
 
         $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid'");
 
