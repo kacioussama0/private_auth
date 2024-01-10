@@ -266,25 +266,23 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $ver = misc\etc\sanitize($_POST['ver'] ?? $_GET['ver']);
 
 
+        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid'");
 
+        if($checkHardwareId -> num_rows == 0) {
+
+            $response = json_encode(array(
+                "success" => false,
+                "message" => "invalidver",
+            ), JSON_UNESCAPED_SLASHES);
+
+            $sig = hash_hmac('sha256', $response, $secret);
+            header("signature: {$sig}");
+
+            die($response);
+
+        }
 
         if (!empty($ver)) {
-
-            $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid'");
-
-            if($checkHardwareId -> num_rows == 0) {
-
-                $response = json_encode(array(
-                    "success" => true,
-                    "message" => "Client is blacklisted",
-                ), JSON_UNESCAPED_SLASHES);
-
-                $sig = hash_hmac('sha256', $response, $secret);
-                header("signature: {$sig}");
-
-                die($response);
-
-            }
 
             if ($ver != $currentver) {
                 // auto-update system
