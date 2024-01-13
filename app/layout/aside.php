@@ -61,6 +61,18 @@ $page = isset($_GET['page']) ? $_GET['page'] : "manage-apps";
                             </li>
                             <?php } ?>
 
+
+                            <?php if (!($role == "Manager" && !($permissions & 2))){ ?>
+                                <li>
+                                    <a href="?page=hwids"
+                                       class="flex items-center p-2 rounded-lg text-gray-300 hover:opacity-60 hover:bg-purple-700 group">
+                                        <i class="lni lni-key"></i>
+                                        <span class="ml-3">Hwids</span>
+                                    </a>
+                                </li>
+                            <?php } ?>
+
+
                             <?php if (!($role == "Manager" && !($permissions & 2048))){ ?>
                             <li>
                                 <a href="?page=tokens"
