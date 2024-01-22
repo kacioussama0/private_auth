@@ -13,13 +13,13 @@ use misc\token;
 function add($hwid)
 {
         $hid = etc\sanitize($hwid);
-        $query = mysql\query("SELECT 1 FROM `hwids` WHERE `hwid` = ?", [$hid]);
+        $query = mysql\query("SELECT 1 FROM `hwids` WHERE `hwid` = ? AND app = ?", [$hid,$_SESSION['app']]);
 
         if ($query->num_rows > 0) {
                 return 'already_exist';
         }
 
-        $query = mysql\query("INSERT INTO `hwids` (`hwid`) VALUES (?)", [$hid]);
+        $query = mysql\query("INSERT INTO `hwids` (`hwid`,`app`) VALUES (?,?)", [$hid,$_SESSION['app']]);
         if ($query->affected_rows > 0) {
                 return 'success';
         } else {
@@ -28,7 +28,7 @@ function add($hwid)
 }
 function deleteAll($secret = null)
 {
-        $query = mysql\query("DELETE FROM `hwids`");
+        $query = mysql\query("DELETE FROM `hwids` WHERE app = ?",[$_SESSION['app']]);
 
         if ($query->affected_rows > 0) {
                 return 'success';
@@ -41,8 +41,7 @@ function deleteSingular($hwid, $secret = null)
 {
     $hid = etc\sanitize($hwid);
 
-
-    $query = mysql\query("DELETE FROM `hwids` WHERE hwid = '$hid'");
+    $query = mysql\query("DELETE FROM `hwids` WHERE hwid = '$hid' AND app = ?",[$_SESSION['app']]);
 
     if ($query->affected_rows > 0) {
         return 'success';

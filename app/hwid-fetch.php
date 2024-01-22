@@ -1,4 +1,6 @@
 <?php
+
+
 include '../includes/misc/autoload.phtml';
 
 set_exception_handler(function ($exception) {
@@ -46,10 +48,10 @@ if (isset($_POST['draw'])) {
         }
 
         if (!is_null($searchValue)) {
-            $query = misc\mysql\query("SELECT * FROM `hwids`");
+            $query = misc\mysql\query("SELECT * FROM `hwids` WHERE app = ?",[$_SESSION['app']]);
         }
         else {
-            $query = misc\mysql\query("SELECT * FROM `hwids`");
+            $query = misc\mysql\query("SELECT * FROM `hwids` WHERE app = ?",[$_SESSION['app']]);
         }
 
         $data = array();
