@@ -1,4 +1,13 @@
 <?php
+
+//   <li>
+//                                                            <a href="' . $row['url'] . '" target="_blank" class="block hover:opacity-60 whitespace-no-wrap py-2 px-4 hover:text-red-700"
+//                                                            value="' . urlencode($row["username"]) . '">
+//                                                            Download File
+//                                                            </a>
+//                                                    </li>
+
+
 if ($_SESSION['role'] == "Reseller") {
     header("location: ./?page=reseller-licenses");
     die();
@@ -293,7 +302,6 @@ if (isset($_POST['savefile'])) {
                             <thead>
                                 <tr class="fw-bolder fs-6 text-purple-700 px-7">
                                     <th class="px-6 py-3">Filename</th>
-                                    <th class="px-6 py-3">ID</th>
                                     <th class="px-6 py-3">Size</th>
                                     <th class="px-6 py-3">Upload Date</th>
                                     <th class="px-6 py-3">Authenticated</th>
@@ -309,8 +317,7 @@ if (isset($_POST['savefile'])) {
                                             echo "<tr>";
 
                                             echo "  <td>" . $row["name"] . "</td>";
-                    
-                                            echo "  <td>" . $row["id"] . "</td>";
+
                     
                                             echo "  <td>" . $row["size"] . "</td>";
                     
@@ -335,12 +342,7 @@ if (isset($_POST['savefile'])) {
                                                             Delete File
                                                             </button>
                                                     </li>
-                                                    <li>
-                                                            <a href="' . $row['url'] . '" target="_blank" class="block hover:opacity-60 whitespace-no-wrap py-2 px-4 hover:text-red-700"
-                                                            value="' . urlencode($row["username"]) . '">
-                                                            Download File
-                                                            </a>
-                                                    </li>   
+                                                 
                                                     <li>
                                                             <button name="editfile" class="block hover:opacity-60 whitespace-no-wrap py-2 px-4 hover:text-purple-700"
                                                             value="' . $row["id"] . '">

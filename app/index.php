@@ -186,6 +186,9 @@ if (!$_SESSION['app']) // no app selected yet
                 ">"
         });
 
+
+
+
     </script>
 
 
