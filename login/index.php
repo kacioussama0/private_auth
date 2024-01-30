@@ -192,6 +192,7 @@ $istwofa = $_SESSION["temp_istwofamode"] ? true : false;
             $banned = $row['banned'];
             $locked = $row['locked'];
             $img = $row['img'];
+            $admin = $row['admin'];
 
             $owner = misc\etc\sanitize($row['owner']);
             $twofactor_optional = $row['twofactor'];
@@ -310,6 +311,7 @@ $istwofa = $_SESSION["temp_istwofamode"] ? true : false;
         $_SESSION['username'] = $username;
         $_SESSION['ownerid'] = $id;
         $_SESSION['role'] = $role;
+        $_SESSION['admin'] = $admin;
         $_SESSION['logindate'] = time();
         $_SESSION['img'] = $img;
         

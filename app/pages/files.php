@@ -301,11 +301,12 @@ if (isset($_POST['savefile'])) {
                         <table id="kt_datatable_files" class="w-full text-sm text-left text-white">
                             <thead>
                                 <tr class="fw-bolder fs-6 text-purple-700 px-7">
+                                    <?php if(isset($_SESSION['admin']) && $_SESSION['admin']) echo   '<th class="px-6 py-3">ID</th>' ?>
                                     <th class="px-6 py-3">Filename</th>
                                     <th class="px-6 py-3">Size</th>
                                     <th class="px-6 py-3">Upload Date</th>
                                     <th class="px-6 py-3">Authenticated</th>
-                                    <th class="px-6 py-3">Actions</th>
+                                 <?php if(isset($_SESSION['admin']) && $_SESSION['admin']) echo   '<th class="px-6 py-3">Actions</th>' ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -315,16 +316,13 @@ if (isset($_POST['savefile'])) {
                                     if ($query->num_rows > 0) {
                                         while ($row = mysqli_fetch_array($query->result)){
                                             echo "<tr>";
-
+                                            if (isset($_SESSION['admin']) && $_SESSION['admin']) echo "  <td>" . $row["id"] . "</td>";
                                             echo "  <td>" . $row["name"] . "</td>";
-
-                    
                                             echo "  <td>" . $row["size"] . "</td>";
-                    
                                             echo "  <td><script>document.write(convertTimestamp(" . $row["uploaddate"] . "));</script></td>";
-                    
                                             echo "  <td>" . (($row["authed"] ? 1 : 0) ? 'True' : 'False') . "</td>";
 
+                                            if(isset($_SESSION['admin']) && $_SESSION['admin'])
                                             echo '<form method="POST">
                                             <td>
 
@@ -355,6 +353,8 @@ if (isset($_POST['savefile'])) {
                                             </tr>
                                             </form>
                                             ';
+
+
                                         }
                                     }
                                 }
