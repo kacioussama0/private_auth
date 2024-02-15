@@ -1242,7 +1242,7 @@ switch ($_POST['type'] ?? $_GET['type']) {
         $ip = api\shared\primary\getIp();
 
 
-        $row = misc\cache\fetch('KeyAuthBlacklist:' . $secret . ':' . $ip . ':', "SELECT 1 FROM `bans` WHERE (`ip` = ?) AND `app` = ?", [$ip, $secret], 0);
+        $row = misc\cache\fetch('KeyAuthBlacklist:' . $secret . ':' . $ip . ':' . $hwid, "SELECT 1 FROM `bans` WHERE (`hwid` = ? OR `ip` = ?) AND `app` = ?", [$hwid, $ip, $secret], 0);
 
         if ($row != "not_found") {
             $response = json_encode(array(
