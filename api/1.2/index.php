@@ -265,23 +265,23 @@ switch ($_POST['type'] ?? $_GET['type']) {
 
         $ver = misc\etc\sanitize($_POST['ver'] ?? $_GET['ver']);
 
-        $hwid = misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid']);
-
-        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid' and app = '$secret'");
-
-        if($checkHardwareId -> num_rows == 0) {
-
-            $response = json_encode(array(
-                "success" => false,
-                "message" => "$appdisabled",
-            ), JSON_UNESCAPED_SLASHES);
-
-            $sig = hash_hmac('sha256', $response, $secret);
-            header("signature: {$sig}");
-
-            die($response);
-
-        }
+//        $hwid = misc\etc\sanitize($_POST['hwid'] ?? $_GET['hwid']);
+//
+//        $checkHardwareId = misc\mysql\query("SELECT hwid FROM hwids WHERE hwid = '$hwid' and app = '$secret'");
+//
+//        if($checkHardwareId -> num_rows == 0) {
+//
+//            $response = json_encode(array(
+//                "success" => false,
+//                "message" => "$appdisabled",
+//            ), JSON_UNESCAPED_SLASHES);
+//
+//            $sig = hash_hmac('sha256', $response, $secret);
+//            header("signature: {$sig}");
+//
+//            die($response);
+//
+//        }
 
         if (!empty($ver)) {
 
